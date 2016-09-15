@@ -181,12 +181,32 @@ var MapDataLoader = {
     },
 
     fetchAndPlotTransnet: function (pgisMap) {
-        var _this = this;
 
-        ApiService.fetchTransnetData(pgisMap, function (data) {
-            var transnetData = data;
-            _this.plotTransnetOnMap(pgisMap, transnetData);
+        var map = pgisMap.map;
+        $.ajax({
+            url: "/transnet",
+            data: {
+                "bounds": map.getBounds().toBBoxString(),
+                "zoom": map.getZoom()
+            },
+            success: function (data) {
+                pgisMap.overlayLayers.transnet.layer.clearLayers();
+                for (var i = 0; i < data.length; i++) {
+                    var polyline = L.polyline(data[i].latlngs, {color: 'red'});
+                    MapHelpers.bindPowerlinePopup(polyline, data[i]);
+                    pgisMap.overlayLayers.transnet.layer.addLayer(polyline);
+                }
+                map.fireEvent("dataload");
+            }
         });
+
+
+        // var _this = this;
+        //
+        // ApiService.fetchTransnetData(pgisMap, function (data) {
+        //     var transnetData = data;
+        //     _this.plotTransnetOnMap(pgisMap, transnetData);
+        // });
     },
 
     plotTransnetOnMap: function (pgisMap, transnetData) {
@@ -196,8 +216,7 @@ var MapDataLoader = {
             var transnetFeatureLayer = L.PgisTransnetFeatureGroup(transnetSection);
             pgisMap.overlayLayers.transnet.layer.addLayer(transnetFeatureLayer);
 
+
         });
-    },
-
-
-}
+    }
+};
