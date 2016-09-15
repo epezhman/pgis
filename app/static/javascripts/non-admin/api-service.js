@@ -21,7 +21,7 @@ var ApiService = {
         map.fireEvent("dataloading");
 
         $.ajax({
-            url: "/relations",
+            url: "/transnet",
             data: {
                 "bounds": map.getBounds().toBBoxString()
             },
