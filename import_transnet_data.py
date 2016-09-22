@@ -21,7 +21,7 @@ def transnet_powerline_importer(continent, country):
         powerlines = csv.reader(csvfile, delimiter=',')
         for row in powerlines:
             query = '''INSERT INTO transnet_powerline(geom, properties, country)
-                                VALUES (%s, %s, %s)'''
+                                VALUES (ST_FlipCoordinates(%s), %s, %s)'''
 
             cur.execute(query, [
                 row[7],

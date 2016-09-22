@@ -13,7 +13,7 @@ class TransnetPowerline(db.Model):
     properties = db.Column(JSON)
 
     def serialize(self):
-        return {"id": self.id, "latlngs": [d[::-1] for d in self.shape().coords], "tags": self.properties["voltage"]}
+        return {"id": self.id, "latlngs": list(self.shape().coords), "tags": self.properties["voltage"]}
 
     def shape(self):
         return to_shape(self.geom)
